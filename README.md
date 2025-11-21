@@ -3,52 +3,57 @@
 A production-style **Spring Boot 3** application for managing an Indian driving school:
 
 - Student registration (with Aadhaar validation & hashing)
-- Course management (LMV/Two-wheeler etc.)
+- Course management (LMV/Two-wheeler/etc.)
 - Certificate generation with **PDF export + QR code**
-- Admin-only secure dashboard & APIs
+- Admin-only secure dashboard & UI pages
+- REST APIs with Swagger UI for testing
 
 Built with:
 
 - Java 17
-- Spring Boot 3
-- Spring Data JPA (MySQL)
-- Spring Security
-- Thymeleaf (for login/dashboard UI)
+- Spring Boot 3 (Web, Security, Data JPA, Validation)
+- MySQL 8
+- Thymeleaf + Bootstrap
+- OpenPDF (PDF)
 - ZXing (QR code)
-- OpenPDF (PDF generation)
 - springdoc-openapi (Swagger UI)
 
 ---
 
 ## Features
 
-### ✅ Auth & Security
+### 🔐 Auth & Security
 
-- Form-based login for **admin dashboard** (`/login`)
-- **Admin-only** access to all `/api/**` endpoints
-- HTTP Basic auth support for calling APIs from tools like Postman
-- Default admin user (via data initializer):
+- Form-based login for **admin** at `/login`
+- **Admin-only** access to:
+  - `/dashboard`
+  - `/admin/**` (students, courses, certificates UI)
+  - `/api/**` (REST APIs)
+- HTTP Basic Auth enabled for calling APIs from Postman / Swagger UI
 
-  - **Username:** `admin`  
-  - **Password:** `admin123`
+**Default admin (dev only):**
 
-> You can (and should) change this in production.
+- Username: `admin`  
+- Password: `admin123`  
+
+> For production, change this user and password in the `DataInitializer` class and secure your instance properly.
 
 ---
 
-### ✅ Student Management
+### 👤 Student Management
 
-- Register new students via API
-- Stores **Aadhaar hash** (SHA-256 + salt) — never plain Aadhaar
-- Stores last 4 digits for display/printing
-- Basic student details: name, mobile, email, address, DOB
+- Register students with:
+  - Full name, mobile, email, address, DOB
+  - Aadhaar number (stored as `hash + last 4`, not plain text)
+- Aadhaar is hashed using salted SHA-256 (`AadharUtil`) and never stored raw.
+- Last 4 digits are stored for display (PDF/QR).
 
-**Endpoints:**
+**REST APIs:**
 
 - `POST /api/students/register`  
-- `GET  /api/students/{id}`
+- `GET  /api/students/{id}`  
 
-Example request:
+**Example request:**
 
 ```json
 POST /api/students/register
