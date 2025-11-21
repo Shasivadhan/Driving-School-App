@@ -12,11 +12,12 @@ import com.ksvtech.drivingschool.repository.CourseRepository;
 import com.ksvtech.drivingschool.repository.StudentRepository;
 import com.ksvtech.drivingschool.util.AadharUtil;
 import com.lowagie.text.*;
-import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -44,16 +45,30 @@ public class CertificateService {
         }
 
         String certNumber = generateCertificateNumber();
-        String verificationUrl =
-                "https://your-domain.com/api/certificates/verify/" + certNumber;
+        LocalDate issueDate = LocalDate.now();
+        LocalDate expiryDate = issueDate.plusYears(2);
+
+        // For privacy, only last 4 digits of Aadhaar in QR
+        String aadhaarDisplay = "XXXX XXXX " + student.getAadharLast4();
+
+        // Text that will be encoded into the QR code
+        String qrText =
+                "KSVTECH DRIVING SCHOOL\n" +
+                        "Certificate No : " + certNumber + "\n" +
+                        "Student ID     : " + student.getId() + "\n" +
+                        "Student Name   : " + student.getFullName() + "\n" +
+                        "Course         : " + course.getName() + "\n" +
+                        "Issue Date     : " + issueDate + "\n" +
+                        "Expiry Date    : " + expiryDate + "\n" +
+                        "Aadhaar        : " + aadhaarDisplay;
 
         Certificate certificate = Certificate.builder()
                 .certificateNumber(certNumber)
                 .student(student)
                 .course(course)
-                .issueDate(LocalDate.now())
-                .expiryDate(LocalDate.now().plusYears(2))
-                .qrData(verificationUrl)
+                .issueDate(issueDate)
+                .expiryDate(expiryDate)
+                .qrData(qrText)          // store details, not URL
                 .aadharHash(hash)
                 .build();
 
@@ -67,7 +82,7 @@ public class CertificateService {
                 .courseName(course.getName())
                 .issueDate(certificate.getIssueDate())
                 .expiryDate(certificate.getExpiryDate())
-                .qrData(verificationUrl)
+                .qrData(qrText)
                 .build();
     }
 
@@ -87,50 +102,182 @@ public class CertificateService {
         Course course = cert.getCourse();
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            Document document = new Document(PageSize.A4);
-            PdfWriter.getInstance(document, baos);
+            // A4 landscape, with margins
+            Document document = new Document(PageSize.A4.rotate(), 36, 36, 36, 36);
+            PdfWriter writer = PdfWriter.getInstance(document, baos);
             document.open();
 
-            Font titleFont = new Font(Font.HELVETICA, 20, Font.BOLD);
-            Paragraph title = new Paragraph("Driving School Completion Certificate", titleFont);
-            title.setAlignment(Element.ALIGN_CENTER);
-            document.add(title);
+            PdfContentByte canvas = writer.getDirectContent();
+            Rectangle pageSize = document.getPageSize();
 
-            document.add(new Paragraph(" "));
-            document.add(new Paragraph("Certificate No: " + cert.getCertificateNumber()));
-            document.add(new Paragraph("Issue Date : " + cert.getIssueDate()));
-            document.add(new Paragraph("Expiry Date: " + cert.getExpiryDate()));
-            document.add(new Paragraph(" "));
+            // ====== BORDERS / FRAME ======
+            // Outer border
+            Rectangle outer = new Rectangle(
+                    document.leftMargin() / 2,
+                    document.bottomMargin() / 2,
+                    pageSize.getRight() - document.rightMargin() / 2,
+                    pageSize.getTop() - document.topMargin() / 2
+            );
+            outer.setBorder(Rectangle.BOX);
+            outer.setBorderWidth(4);
+            outer.setBorderColor(new Color(0, 51, 102)); // dark blue
+            canvas.rectangle(outer);
 
-            Font bodyFont = new Font(Font.HELVETICA, 12);
-            Paragraph body = new Paragraph(
-                    "This is to certify that " + student.getFullName() +
-                            " has successfully completed the course " + course.getName() +
-                            " at our driving school.", bodyFont);
-            body.setAlignment(Element.ALIGN_JUSTIFIED);
-            document.add(body);
+            // Inner border
+            Rectangle inner = new Rectangle(
+                    outer.getLeft() + 10,
+                    outer.getBottom() + 10,
+                    outer.getRight() - 10,
+                    outer.getTop() - 10
+            );
+            inner.setBorder(Rectangle.BOX);
+            inner.setBorderWidth(1.5f);
+            inner.setBorderColor(new Color(153, 153, 153)); // grey
+            canvas.rectangle(inner);
 
-            document.add(new Paragraph(" "));
-            document.add(new Paragraph("Student ID: " + student.getId()));
-            document.add(new Paragraph("Mobile    : " + student.getMobile()));
-            document.add(new Paragraph("Aadhaar (last 4 digits): **** **** " + student.getAadharLast4()));
-            document.add(new Paragraph("Address   : " + (student.getAddress() != null ? student.getAddress() : "")));
+            // ====== FONTS ======
+            Font titleFont = new Font(Font.HELVETICA, 26, Font.BOLD, new Color(0, 51, 102));
+            Font headerFont = new Font(Font.HELVETICA, 14, Font.BOLD);
+            Font subHeaderFont = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.DARK_GRAY);
+            Font labelFont = new Font(Font.HELVETICA, 12, Font.BOLD);
+            Font valueFont = new Font(Font.HELVETICA, 12, Font.NORMAL);
+            Font smallFont = new Font(Font.HELVETICA, 9, Font.ITALIC, Color.DARK_GRAY);
 
-            document.add(new Paragraph(" "));
-            document.add(new Paragraph("Scan the QR code below to verify this certificate."));
+            // ====== HEADER (School name etc.) ======
+            Paragraph schoolName = new Paragraph("KSVTECH DRIVING SCHOOL", titleFont);
+            schoolName.setAlignment(Element.ALIGN_CENTER);
+            schoolName.setSpacingBefore(20f);
+            document.add(schoolName);
 
-            byte[] qrBytes = qrCodeService.generateQRCodeImage(cert.getQrData(), 200, 200);
+            Paragraph schoolAddress = new Paragraph(
+                    "Near RTO Office, Your City, Your State, India",
+                    subHeaderFont
+            );
+            schoolAddress.setAlignment(Element.ALIGN_CENTER);
+            schoolAddress.setSpacingAfter(10f);
+            document.add(schoolAddress);
+
+            Paragraph certTitle = new Paragraph("CERTIFICATE OF COMPLETION", headerFont);
+            certTitle.setAlignment(Element.ALIGN_CENTER);
+            certTitle.setSpacingBefore(10f);
+            certTitle.setSpacingAfter(20f);
+            document.add(certTitle);
+
+            // ====== INTRO TEXT ======
+            Paragraph intro = new Paragraph(
+                    "This is to certify that the candidate mentioned below has successfully " +
+                            "completed the prescribed driving training course at KsvTech Driving School.",
+                    valueFont
+            );
+            intro.setAlignment(Element.ALIGN_CENTER);
+            intro.setLeading(16f);
+            intro.setSpacingAfter(25f);
+            document.add(intro);
+
+            // ====== DETAILS TABLE ======
+            PdfPTable detailsTable = new PdfPTable(4); // label / value / label / value
+            detailsTable.setWidthPercentage(90);
+            detailsTable.setSpacingBefore(10f);
+            detailsTable.setWidths(new float[]{1.4f, 2.6f, 1.4f, 2.6f});
+
+            detailsTable.addCell(makeLabelCell("Student Name", labelFont));
+            detailsTable.addCell(makeValueCell(student.getFullName(), valueFont));
+
+            detailsTable.addCell(makeLabelCell("Student ID", labelFont));
+            detailsTable.addCell(makeValueCell(String.valueOf(student.getId()), valueFont));
+
+            detailsTable.addCell(makeLabelCell("Course", labelFont));
+            detailsTable.addCell(makeValueCell(course.getName(), valueFont));
+
+            detailsTable.addCell(makeLabelCell("Course Code", labelFont));
+            detailsTable.addCell(makeValueCell(course.getCode(), valueFont));
+
+            detailsTable.addCell(makeLabelCell("Issue Date", labelFont));
+            detailsTable.addCell(makeValueCell(String.valueOf(cert.getIssueDate()), valueFont));
+
+            detailsTable.addCell(makeLabelCell("Expiry Date", labelFont));
+            detailsTable.addCell(makeValueCell(String.valueOf(cert.getExpiryDate()), valueFont));
+
+            detailsTable.addCell(makeLabelCell("Mobile", labelFont));
+            detailsTable.addCell(makeValueCell(student.getMobile(), valueFont));
+
+            detailsTable.addCell(makeLabelCell("Aadhaar (last 4)", labelFont));
+            detailsTable.addCell(makeValueCell("XXXX XXXX " + student.getAadharLast4(), valueFont));
+
+            document.add(detailsTable);
+
+            document.add(Chunk.NEWLINE);
+
+            Paragraph note = new Paragraph(
+                    "Note: This certificate is valid only when verified online using the QR code.",
+                    smallFont
+            );
+            note.setAlignment(Element.ALIGN_CENTER);
+            note.setSpacingAfter(20f);
+            document.add(note);
+
+            // ====== BOTTOM SECTION: signatures + QR ======
+            PdfPTable bottomTable = new PdfPTable(3);
+            bottomTable.setWidthPercentage(90);
+            bottomTable.setWidths(new float[]{2.5f, 2.5f, 2.0f});
+            bottomTable.setSpacingBefore(30f);
+
+            // Left: Student signature
+            PdfPCell studentCell = new PdfPCell();
+            studentCell.setBorder(Rectangle.NO_BORDER);
+            studentCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            studentCell.addElement(new Paragraph("__________________________", valueFont));
+            studentCell.addElement(new Paragraph("Student Signature", labelFont));
+            bottomTable.addCell(studentCell);
+
+            // Middle: Authorized Signatory
+            PdfPCell authCell = new PdfPCell();
+            authCell.setBorder(Rectangle.NO_BORDER);
+            authCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            authCell.addElement(new Paragraph("__________________________", valueFont));
+            authCell.addElement(new Paragraph("Authorized Signatory", labelFont));
+            bottomTable.addCell(authCell);
+
+            // Right: QR Code
+            PdfPCell qrCell = new PdfPCell();
+            qrCell.setBorder(Rectangle.NO_BORDER);
+            qrCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+            byte[] qrBytes = qrCodeService.generateQRCodeImage(cert.getQrData(), 120, 120);
             Image qrImage = Image.getInstance(qrBytes);
+            qrImage.scaleToFit(100, 100);
             qrImage.setAlignment(Image.ALIGN_CENTER);
-            document.add(qrImage);
 
-            document.add(new Paragraph(" "));
-            document.add(new Paragraph("Authorized Signatory", bodyFont));
+            qrCell.addElement(qrImage);
+            qrCell.addElement(new Paragraph("Scan to verify", smallFont));
+            bottomTable.addCell(qrCell);
+
+            document.add(bottomTable);
 
             document.close();
             return baos.toByteArray();
         } catch (Exception e) {
             throw new RuntimeException("Error generating PDF", e);
         }
+    }
+
+    // ===== Helper methods for table cells =====
+
+    private PdfPCell makeLabelCell(String text, Font font) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setPadding(6f);
+        return cell;
+    }
+
+    private PdfPCell makeValueCell(String text, Font font) {
+        PdfPCell cell = new PdfPCell(new Phrase(text != null ? text : "", font));
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setPadding(6f);
+        return cell;
     }
 }
