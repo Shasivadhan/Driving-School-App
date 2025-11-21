@@ -37,21 +37,50 @@
     <div class="p-4 mb-4 bg-light rounded-3 shadow-sm">
         <div class="container-fluid py-3">
             <h1 class="display-5 fw-bold text-primary">Welcome to the KsvTech Driving School Dashboard</h1>
-            <p class="col-md-8 fs-5">From here you can manage students, batches, and certificates efficiently.</p>
+            <p class="col-md-8 fs-5">
+                From here you can manage students, courses, batches, and certificates efficiently.
+            </p>
+
+            <!-- Quick action buttons to real UI pages -->
+            <div class="mt-3 d-flex flex-wrap gap-2">
+                <a class="btn btn-outline-primary"
+                   th:href="@{/admin/students}" href="/admin/students">
+                    Manage Students
+                </a>
+                <a class="btn btn-outline-success"
+                   th:href="@{/admin/courses}" href="/admin/courses">
+                    Manage Courses
+                </a>
+                <a class="btn btn-outline-warning"
+                   th:href="@{/admin/certificates/new}" href="/admin/certificates/new">
+                    Generate Certificate
+                </a>
+                <a class="btn btn-outline-secondary"
+                   th:href="@{/swagger-ui/index.html}" href="/swagger-ui/index.html" target="_blank">
+                    Open Swagger UI
+                </a>
+            </div>
         </div>
     </div>
 
     <h3 class="mb-4">API Quick Links</h3>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
+        <!-- Swagger -->
         <div class="col">
             <div class="card h-100 card-action">
                 <div class="card-body">
                     <h5 class="card-title text-success">API Documentation</h5>
                     <p class="card-text">Explore all available REST endpoints.</p>
                     <code class="d-block text-muted">/swagger-ui/index.html</code>
+                    <a class="btn btn-sm btn-outline-success mt-2"
+                       th:href="@{/swagger-ui/index.html}" href="/swagger-ui/index.html" target="_blank">
+                        Open Swagger UI
+                    </a>
                 </div>
             </div>
         </div>
+
+        <!-- Student registration -->
         <div class="col">
             <div class="card h-100 card-action">
                 <div class="card-body">
@@ -61,6 +90,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Generate certificate -->
         <div class="col">
             <div class="card h-100 card-action">
                 <div class="card-body">
@@ -70,12 +101,36 @@
                 </div>
             </div>
         </div>
+
+        <!-- Download certificate -->
         <div class="col">
             <div class="card h-100 card-action">
                 <div class="card-body">
                     <h5 class="card-title text-danger">Download Certificate</h5>
                     <p class="card-text">API to download a specific certificate as PDF.</p>
-                    <code class="d-block text-muted">GET /api/certificates/{{id}}/pdf</code>
+                    <code class="d-block text-muted">GET /api/certificates/{id}/pdf</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create course -->
+        <div class="col">
+            <div class="card h-100 card-action">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Create Course</h5>
+                    <p class="card-text">API to create a new driving course (LMV, Two-Wheeler, etc.).</p>
+                    <code class="d-block text-muted">POST /api/courses</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- List courses -->
+        <div class="col">
+            <div class="card h-100 card-action">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">List Courses</h5>
+                    <p class="card-text">API to fetch all available courses.</p>
+                    <code class="d-block text-muted">GET /api/courses</code>
                 </div>
             </div>
         </div>
