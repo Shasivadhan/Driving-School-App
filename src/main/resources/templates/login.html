@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KsvTech Driving School Login</title>
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff; /* A modern blue */
+            --gradient-start: #4A90E2;
+            --gradient-end: #6e84ab;
+        }
+        body {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border: none;
+            overflow: hidden;
+        }
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            border-bottom: none;
+            text-align: center;
+        }
+        .brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+            font-size: 1.75rem;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-sm-8 col-md-6 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="brand m-0">My Driving School</h3>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <p class="text-center text-muted mb-4">Sign in to the Admin Dashboard</p>
+
+                    <form th:action="@{/login}" method="post">
+                        <div class="mb-3">
+                            <label for="usernameInput" class="form-label">Username</label>
+                            <input id="usernameInput" class="form-control" type="text" name="username" required autofocus>
+                        </div>
+                        <div class="mb-4">
+                            <label for="passwordInput" class="form-label">Password</label>
+                            <input id="passwordInput" class="form-control" type="password" name="password" required>
+                        </div>
+
+                        <div th:if="${param.error}" class="alert alert-danger py-2" role="alert">
+                            Invalid username or password
+                        </div>
+                        <div th:if="${param.logout}" class="alert alert-success py-2" role="alert">
+                            You have been logged out successfully.
+                        </div>
+
+                        <button class="btn btn-primary w-100 mt-2" type="submit">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </button>
+                    </form>
+
+                    <hr class="my-4">
+                    <div class="text-center">
+                        <small class="text-muted">
+                            New student registration is done via admin or API:
+                            <code class="d-block text-break mt-1">POST /api/students/register</code>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
