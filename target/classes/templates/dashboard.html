@@ -2,30 +2,80 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard - KsvTech Driving School</title>
+
+    <!-- Bootstrap CSS -->
     <link th:href="@{/css/bootstrap.min.css}"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"/>
+
     <style>
+        body {
+            background-color: #f4f6fb;
+        }
         .navbar-brand {
             font-weight: 700;
             letter-spacing: 0.5px;
         }
         .card-action {
             transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 0.75rem;
         }
         .card-action:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.10);
+        }
+        .stat-card-icon {
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6c757d;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #6c757d;
+        }
+        .quick-btns a {
+            min-width: 180px;
+        }
+        code.api {
+            background-color: #f8f9fa;
+            border-radius: 0.25rem;
+            padding: 0.15rem 0.35rem;
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container-fluid">
-        <a class="navbar-brand ms-2" href="#">Driving School Admin</a>
-        <div class="navbar-collapse collapse">
-            <ul class="navbar-nav ms-auto">
+        <a class="navbar-brand ms-2" href="#">KsvTech Driving School</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarMain" aria-controls="navbarMain"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item me-2 d-none d-lg-block">
+                    <span class="text-light-50 small">Admin Panel</span>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/logout}" href="#">Logout</a>
                 </li>
@@ -33,108 +83,252 @@
         </div>
     </div>
 </nav>
-<div class="container mt-5">
-    <div class="p-4 mb-4 bg-light rounded-3 shadow-sm">
-        <div class="container-fluid py-3">
-            <h1 class="display-5 fw-bold text-primary">Welcome to the KsvTech Driving School Dashboard</h1>
-            <p class="col-md-8 fs-5">
-                From here you can manage students, courses, batches, and certificates efficiently.
-            </p>
 
-            <!-- Quick action buttons to real UI pages -->
-            <div class="mt-3 d-flex flex-wrap gap-2">
-                <a class="btn btn-outline-primary"
-                   th:href="@{/admin/students}" href="/admin/students">
-                    Manage Students
-                </a>
-                <a class="btn btn-outline-success"
-                   th:href="@{/admin/courses}" href="/admin/courses">
-                    Manage Courses
-                </a>
-                <a class="btn btn-outline-warning"
-                   th:href="@{/admin/certificates/new}" href="/admin/certificates/new">
-                    Generate Certificate
-                </a>
-                <a class="btn btn-outline-secondary"
-                   th:href="@{/swagger-ui/index.html}" href="/swagger-ui/index.html" target="_blank">
-                    Open Swagger UI
-                </a>
+<div class="container my-4 my-lg-5">
+
+    <!-- HERO / WELCOME -->
+    <div class="p-4 p-lg-5 mb-4 bg-white rounded-3 shadow-sm">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-6 fw-bold text-primary mb-2">
+                    Welcome to the KsvTech Driving School Dashboard
+                </h1>
+                <p class="lead mb-3">
+                    Manage students, courses and completion certificates from a single, secure admin panel.
+                </p>
+                <p class="mb-3 text-muted">
+                    Use the quick actions below for daily tasks, or explore the full API using Swagger for deeper integrations.
+                </p>
+
+                <div class="quick-btns d-flex flex-wrap gap-2 mt-2">
+                    <a class="btn btn-primary"
+                       th:href="@{/admin/students}" href="/admin/students">
+                        <i class="bi bi-people-fill me-1"></i> Manage Students
+                    </a>
+                    <a class="btn btn-success"
+                       th:href="@{/admin/courses}" href="/admin/courses">
+                        <i class="bi bi-journals me-1"></i> Manage Courses
+                    </a>
+                    <a class="btn btn-warning text-dark"
+                       th:href="@{/admin/certificates/new}" href="/admin/certificates/new">
+                        <i class="bi bi-award-fill me-1"></i> Generate Certificate
+                    </a>
+                    <a class="btn btn-outline-secondary"
+                       th:href="@{/swagger-ui/index.html}" href="/swagger-ui/index.html" target="_blank">
+                        <i class="bi bi-braces-asterisk me-1"></i> Open Swagger UI
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-4 mt-lg-0 text-lg-end">
+                <div class="text-muted small mb-1">Environment</div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle">
+                    <i class="bi bi-check-circle-fill me-1"></i> Online
+                </span>
+                <div class="mt-3 small text-muted">
+                    <div><i class="bi bi-shield-lock me-1"></i> Admin-only access</div>
+                    <div><i class="bi bi-clock-history me-1"></i> All actions are audit-friendly</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <h3 class="mb-4">API Quick Links</h3>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
-        <!-- Swagger -->
-        <div class="col">
-            <div class="card h-100 card-action">
-                <div class="card-body">
-                    <h5 class="card-title text-success">API Documentation</h5>
-                    <p class="card-text">Explore all available REST endpoints.</p>
-                    <code class="d-block text-muted">/swagger-ui/index.html</code>
-                    <a class="btn btn-sm btn-outline-success mt-2"
-                       th:href="@{/swagger-ui/index.html}" href="/swagger-ui/index.html" target="_blank">
-                        Open Swagger UI
-                    </a>
+    <!-- STATS CARDS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card card-action border-0 bg-white shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="stat-label">Students</div>
+                        <div class="stat-value" th:text="${studentCount} ?: 0">0</div>
+                        <small class="text-muted">Total registered students</small>
+                    </div>
+                    <div class="ms-3 text-primary">
+                        <i class="bi bi-person-badge stat-card-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-action border-0 bg-white shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="stat-label">Courses</div>
+                        <div class="stat-value" th:text="${courseCount} ?: 0">0</div>
+                        <small class="text-muted">Active driving courses</small>
+                    </div>
+                    <div class="ms-3 text-success">
+                        <i class="bi bi-journal-text stat-card-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-action border-0 bg-white shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="stat-label">Certificates</div>
+                        <div class="stat-value" th:text="${certificateCount} ?: 0">0</div>
+                        <small class="text-muted">Certificates issued so far</small>
+                    </div>
+                    <div class="ms-3 text-warning">
+                        <i class="bi bi-award stat-card-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MANAGEMENT CARDS -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="section-title">Management</span>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="card card-action h-100 border-0 bg-white shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-2 text-primary">
+                                    <i class="bi bi-people-fill fs-3"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-0">Students</h5>
+                                    <small class="text-muted">Enroll, view and manage student records.</small>
+                                </div>
+                            </div>
+                            <ul class="small mb-3 ps-3 text-muted">
+                                <li>Register new students with Aadhaar validation</li>
+                                <li>Maintain contact details and DOB</li>
+                            </ul>
+                            <a class="btn btn-sm btn-outline-primary"
+                               th:href="@{/admin/students}" href="/admin/students">
+                                Go to Students
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-action h-100 border-0 bg-white shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-2 text-success">
+                                    <i class="bi bi-journal-medical fs-3"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-0">Courses</h5>
+                                    <small class="text-muted">Configure LMV, MCWG and other courses.</small>
+                                </div>
+                            </div>
+                            <ul class="small mb-3 ps-3 text-muted">
+                                <li>Create and manage course catalog</li>
+                                <li>Set duration and fees per course</li>
+                            </ul>
+                            <a class="btn btn-sm btn-outline-success"
+                               th:href="@{/admin/courses}" href="/admin/courses">
+                                Go to Courses
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-action h-100 border-0 bg-white shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-2 text-warning">
+                                    <i class="bi bi-award-fill fs-3"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-0">Certificates</h5>
+                                    <small class="text-muted">Issue and download completion certificates.</small>
+                                </div>
+                            </div>
+                            <ul class="small mb-3 ps-3 text-muted">
+                                <li>Generate PDF certificates with QR verification</li>
+                                <li>Auto-validate Aadhaar against student record</li>
+                            </ul>
+                            <a class="btn btn-sm btn-outline-warning text-dark"
+                               th:href="@{/admin/certificates/new}" href="/admin/certificates/new">
+                                Generate Certificate
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-action h-100 border-0 bg-white shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-2 text-secondary">
+                                    <i class="bi bi-braces-asterisk fs-3"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-0">API & Integrations</h5>
+                                    <small class="text-muted">Use REST APIs for automation.</small>
+                                </div>
+                            </div>
+                            <ul class="small mb-3 ps-3 text-muted">
+                                <li>Swagger UI for exploring and testing APIs</li>
+                                <li>Ideal for mobile apps or external systems</li>
+                            </ul>
+                            <a class="btn btn-sm btn-outline-secondary"
+                               th:href="@{/swagger-ui/index.html}" href="/swagger-ui/index.html" target="_blank">
+                                Open Swagger UI
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Student registration -->
-        <div class="col">
-            <div class="card h-100 card-action">
+        <!-- API QUICK LINKS -->
+        <div class="col-lg-4">
+            <div class="section-title mb-2">API Quick Links</div>
+            <div class="card border-0 bg-white shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title text-info">Student Registration</h5>
-                    <p class="card-text">API for registering a new student.</p>
-                    <code class="d-block text-muted">POST /api/students/register</code>
-                </div>
-            </div>
-        </div>
+                    <p class="small text-muted mb-3">
+                        Use these endpoints from Swagger or Postman (with admin auth) for backend operations.
+                    </p>
 
-        <!-- Generate certificate -->
-        <div class="col">
-            <div class="card h-100 card-action">
-                <div class="card-body">
-                    <h5 class="card-title text-warning">Generate Certificate</h5>
-                    <p class="card-text">API for generating a student's completion certificate.</p>
-                    <code class="d-block text-muted">POST /api/certificates</code>
-                </div>
-            </div>
-        </div>
+                    <div class="mb-3">
+                        <div class="fw-semibold"><i class="bi bi-people-fill me-1"></i> Students</div>
+                        <div class="small text-muted">
+                            <div><code class="api">POST /api/students/register</code> – Register student</div>
+                            <div><code class="api">GET /api/students/{id}</code> – Get student</div>
+                        </div>
+                    </div>
 
-        <!-- Download certificate -->
-        <div class="col">
-            <div class="card h-100 card-action">
-                <div class="card-body">
-                    <h5 class="card-title text-danger">Download Certificate</h5>
-                    <p class="card-text">API to download a specific certificate as PDF.</p>
-                    <code class="d-block text-muted">GET /api/certificates/{id}/pdf</code>
-                </div>
-            </div>
-        </div>
+                    <div class="mb-3">
+                        <div class="fw-semibold"><i class="bi bi-journal-text me-1"></i> Courses</div>
+                        <div class="small text-muted">
+                            <div><code class="api">POST /api/courses</code> – Create course</div>
+                            <div><code class="api">GET /api/courses</code> – List courses</div>
+                        </div>
+                    </div>
 
-        <!-- Create course -->
-        <div class="col">
-            <div class="card h-100 card-action">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">Create Course</h5>
-                    <p class="card-text">API to create a new driving course (LMV, Two-Wheeler, etc.).</p>
-                    <code class="d-block text-muted">POST /api/courses</code>
-                </div>
-            </div>
-        </div>
+                    <div class="mb-2">
+                        <div class="fw-semibold"><i class="bi bi-award me-1"></i> Certificates</div>
+                        <div class="small text-muted">
+                            <div><code class="api">POST /api/certificates</code> – Generate certificate</div>
+                            <div><code class="api">GET /api/certificates/{id}/pdf</code> – Download PDF</div>
+                        </div>
+                    </div>
 
-        <!-- List courses -->
-        <div class="col">
-            <div class="card h-100 card-action">
-                <div class="card-body">
-                    <h5 class="card-title text-secondary">List Courses</h5>
-                    <p class="card-text">API to fetch all available courses.</p>
-                    <code class="d-block text-muted">GET /api/courses</code>
+                    <hr>
+                    <small class="text-muted">
+                        Full documentation: <br>
+                        <code class="api">/swagger-ui/index.html</code>
+                    </small>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Optional Bootstrap JS (if not already included globally) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        th:if="${false}"></script>
 </body>
 </html>
