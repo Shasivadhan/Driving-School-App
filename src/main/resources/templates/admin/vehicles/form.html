@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${vehicleId} == null ? 'New Vehicle' : 'Edit Vehicle'">Vehicle</title>
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 th:text="${vehicleId} == null ? 'New Vehicle' : 'Edit Vehicle'">Vehicle</h2>
+        <a th:href="@{/admin/vehicles}" class="btn btn-outline-secondary btn-sm">Back to list</a>
+    </div>
+
+    <form th:object="${vehicle}"
+          th:action="${vehicleId} == null ?
+                     @{/admin/vehicles} :
+                     @{'/admin/vehicles/' + ${vehicleId}}"
+          method="post"
+          class="row g-3">
+
+        <div class="col-md-4">
+            <label class="form-label">Registration Number</label>
+            <input type="text" th:field="*{registrationNumber}" class="form-control" required>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Type</label>
+            <select th:field="*{type}" class="form-select" required>
+                <option th:each="t : ${vehicleTypes}"
+                        th:value="${t}"
+                        th:text="${t}"></option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Fuel Type</label>
+            <input type="text" th:field="*{fuelType}" class="form-control" placeholder="Petrol / Diesel / EV">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Make</label>
+            <input type="text" th:field="*{make}" class="form-control" placeholder="Maruti, Honda...">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Model</label>
+            <input type="text" th:field="*{model}" class="form-control" placeholder="Swift, Activa...">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Year of Manufacture</label>
+            <input type="number" min="1980" max="2100" th:field="*{yearOfManufacture}" class="form-control">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Insurance Expiry</label>
+            <input type="date" th:field="*{insuranceExpiryDate}" class="form-control">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Fitness Expiry</label>
+            <input type="date" th:field="*{fitnessExpiryDate}" class="form-control">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Active</label>
+            <select th:field="*{active}" class="form-select">
+                <option th:value="true">Active</option>
+                <option th:value="false">Inactive</option>
+            </select>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Notes</label>
+            <textarea th:field="*{notes}" class="form-control" rows="2"></textarea>
+        </div>
+
+        <div class="col-12 mt-3">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a th:href="@{/admin/vehicles}" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

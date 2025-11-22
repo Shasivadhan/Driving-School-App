@@ -94,7 +94,7 @@
                     Welcome to the KsvTech Driving School Dashboard
                 </h1>
                 <p class="lead mb-3">
-                    Manage students, courses and completion certificates from a single, secure admin panel.
+                    Manage students, courses, instructors, vehicles and completion certificates from a single, secure admin panel.
                 </p>
                 <p class="mb-3 text-muted">
                     Use the quick actions below for daily tasks, or explore the full API using Swagger for deeper integrations.
@@ -108,6 +108,18 @@
                     <a class="btn btn-success"
                        th:href="@{/admin/courses}" href="/admin/courses">
                         <i class="bi bi-journals me-1"></i> Manage Courses
+                    </a>
+                    <a class="btn btn-outline-info"
+                       th:href="@{/admin/instructors}" href="/admin/instructors">
+                        <i class="bi bi-person-workspace me-1"></i> Manage Instructors
+                    </a>
+                    <a class="btn btn-outline-dark"
+                       th:href="@{/admin/vehicles}" href="/admin/vehicles">
+                        <i class="bi bi-car-front me-1"></i> Manage Vehicles
+                    </a>
+                    <a class="btn btn-outline-primary"
+                       th:href="@{/admin/batches}" href="/admin/batches">
+                        <i class="bi bi-calendar-week me-1"></i> Manage Batches
                     </a>
                     <a class="btn btn-warning text-dark"
                        th:href="@{/admin/certificates/new}" href="/admin/certificates/new">
@@ -178,13 +190,14 @@
         </div>
     </div>
 
-    <!-- MANAGEMENT CARDS -->
+    <!-- MANAGEMENT + API QUICK LINKS -->
     <div class="row g-4 mb-4">
         <div class="col-lg-8">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="section-title">Management</span>
             </div>
             <div class="row g-3">
+                <!-- Students -->
                 <div class="col-md-6">
                     <div class="card card-action h-100 border-0 bg-white shadow-sm">
                         <div class="card-body">
@@ -209,6 +222,7 @@
                     </div>
                 </div>
 
+                <!-- Courses -->
                 <div class="col-md-6">
                     <div class="card card-action h-100 border-0 bg-white shadow-sm">
                         <div class="card-body">
@@ -233,6 +247,82 @@
                     </div>
                 </div>
 
+                <!-- Instructors -->
+                <div class="col-md-6">
+                    <div class="card card-action h-100 border-0 bg-white shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-2 text-info">
+                                    <i class="bi bi-person-workspace fs-3"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-0">Instructors</h5>
+                                    <small class="text-muted">Manage trainers and their license details.</small>
+                                </div>
+                            </div>
+                            <ul class="small mb-3 ps-3 text-muted">
+                                <li>Maintain instructor profiles & experience</li>
+                                <li>Track license type and validity</li>
+                            </ul>
+                            <a class="btn btn-sm btn-outline-info"
+                               th:href="@{/admin/instructors}" href="/admin/instructors">
+                                Go to Instructors
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicles -->
+                <div class="col-md-6">
+                    <div class="card card-action h-100 border-0 bg-white shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-2 text-dark">
+                                    <i class="bi bi-car-front fs-3"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-0">Vehicles</h5>
+                                    <small class="text-muted">Track training vehicles & fitness dates.</small>
+                                </div>
+                            </div>
+                            <ul class="small mb-3 ps-3 text-muted">
+                                <li>Maintain registration, make & model</li>
+                                <li>Monitor insurance & fitness expiry</li>
+                            </ul>
+                            <a class="btn btn-sm btn-outline-dark"
+                               th:href="@{/admin/vehicles}" href="/admin/vehicles">
+                                Go to Vehicles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Batches -->
+                <div class="col-md-6">
+                    <div class="card card-action h-100 border-0 bg-white shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-2 text-primary">
+                                    <i class="bi bi-calendar-week fs-3"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-0">Batches & Scheduling</h5>
+                                    <small class="text-muted">Organize students into time slots.</small>
+                                </div>
+                            </div>
+                            <ul class="small mb-3 ps-3 text-muted">
+                                <li>Create batches per course, instructor & vehicle</li>
+                                <li>Control capacity and enrolled students</li>
+                            </ul>
+                            <a class="btn btn-sm btn-outline-primary"
+                               th:href="@{/admin/batches}" href="/admin/batches">
+                                Go to Batches
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificates & API stay as is -->
                 <div class="col-md-6">
                     <div class="card card-action h-100 border-0 bg-white shadow-sm">
                         <div class="card-body">
@@ -280,10 +370,11 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
-        <!-- API QUICK LINKS -->
+        <!-- API QUICK LINKS (unchanged) -->
         <div class="col-lg-4">
             <div class="section-title mb-2">API Quick Links</div>
             <div class="card border-0 bg-white shadow-sm">
@@ -308,6 +399,30 @@
                         </div>
                     </div>
 
+                    <div class="mb-3">
+                        <div class="fw-semibold"><i class="bi bi-person-workspace me-1"></i> Instructors</div>
+                        <div class="small text-muted">
+                            <div><code class="api">POST /api/instructors</code> – Create instructor</div>
+                            <div><code class="api">GET /api/instructors</code> – List instructors</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="fw-semibold"><i class="bi bi-car-front me-1"></i> Vehicles</div>
+                        <div class="small text-muted">
+                            <div><code class="api">POST /api/vehicles</code> – Create vehicle</div>
+                            <div><code class="api">GET /api/vehicles</code> – List vehicles</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <div class="fw-semibold"><i class="bi bi-calendar-week me-1"></i> Batches</div>
+                        <div class="small text-muted">
+                            <div><code class="api">POST /api/batches</code> – Create batch</div>
+                            <div><code class="api">GET /api/batches</code> – List batches</div>
+                        </div>
+                    </div>
+
                     <div class="mb-2">
                         <div class="fw-semibold"><i class="bi bi-award me-1"></i> Certificates</div>
                         <div class="small text-muted">
@@ -325,7 +440,89 @@
             </div>
         </div>
     </div>
+
+    <!-- ANALYTICS / CHARTS -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-6">
+            <div class="card border-0 bg-white shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-1">
+                        <i class="bi bi-graph-up-arrow me-1"></i> Certificates by Course
+                    </h5>
+                    <small class="text-muted">Number of certificates issued per course.</small>
+                    <div style="height: 320px;" class="mt-3">
+                        <canvas id="certByCourseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 bg-white shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-1">
+                        <i class="bi bi-calendar-week me-1"></i> Certificates per Month
+                    </h5>
+                    <small class="text-muted">Trend of certificates issued over time (by month).</small>
+                    <div style="height: 320px;" class="mt-3">
+                        <canvas id="certByMonthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Analytics scripts -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const certCourseLabels = /*[[${certCourseLabels}]]*/ [];
+    const certCourseData   = /*[[${certCourseData}]]*/ [];
+
+    const certMonthLabels  = /*[[${certMonthLabels}]]*/ [];
+    const certMonthData    = /*[[${certMonthData}]]*/ [];
+
+    function buildBarChart(ctxId, labels, data, label) {
+        const ctx = document.getElementById(ctxId);
+        if (!ctx || labels.length === 0) {
+            return;
+        }
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: data,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        buildBarChart('certByCourseChart', certCourseLabels, certCourseData, 'Certificates');
+        buildBarChart('certByMonthChart', certMonthLabels, certMonthData, 'Certificates');
+    });
+    /*]]>*/
+</script>
 
 <!-- Optional Bootstrap JS (if not already included globally) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
