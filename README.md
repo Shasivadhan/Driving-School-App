@@ -298,7 +298,7 @@ From here you can:
 - Send test requests (with authentication)
 - See request/response models
 
-Swagger is mainly for **testing / integration**. Real users use the **Thymeleaf admin UI** (`/login`, `/dashboard`, `/admin/...`).
+Swagger is mainly for **testing/integration**. Real users use the **Thymeleaf admin UI** (`/login`, `/dashboard`, `/admin/...`).
 
 ---
 
@@ -341,3 +341,21 @@ src/main/java/com/ksvtech/drivingschool
 └─ service
    ├─ CertificateService.java
    └─ PaymentService.java
+```
+
+Templates (Thymeleaf) under:
+
+```text
+src/main/resources/templates
+├─ login.html
+├─ dashboard.html
+└─ admin/
+   ├─ students/...
+   ├─ courses/...
+   ├─ certificates/...
+   ├─ instructors/...
+   ├─ vehicles/...
+   ├─ batches/...
+   └─ payments/...
+```
+
