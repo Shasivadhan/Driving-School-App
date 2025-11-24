@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payments - KsvTech Driving School</title>
+  <link th:href="@{/css/bootstrap.min.css}"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Payments</h2>
+    <div>
+      <a th:href="@{/dashboard}" class="btn btn-outline-secondary btn-sm me-2">
+        Back to Dashboard
+      </a>
+      <a th:href="@{/admin/payments/new}" class="btn btn-primary btn-sm">
+        New Payment
+      </a>
+    </div>
+  </div>
+
+  <table class="table table-striped table-hover align-middle">
+    <thead class="table-light">
+    <tr>
+      <th>ID</th>
+      <th>Date</th>
+      <th>Student</th>
+      <th>Course</th>
+      <th>Batch</th>
+      <th>Amount</th>
+      <th>Total Fee</th>
+      <th>Paid So Far</th>
+      <th>Due</th>
+      <th>Method</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="p : ${payments}">
+      <td th:text="${p.id}">1</td>
+
+      <!-- Payment date (no ternary) -->
+      <td>
+                <span th:if="${p.paymentDate != null}"
+                      th:text="${#temporals.format(p.paymentDate, 'dd-MM-yyyy HH:mm')}">
+                    22-11-2025 10:30
+                </span>
+        <span th:if="${p.paymentDate == null}"></span>
+      </td>
+
+      <td th:text="${p.studentName}">Ram</td>
+      <td th:text="${p.courseName}">LMV 21 Days</td>
+
+      <!-- Batch name with simple if/else style -->
+      <td>
+        <span th:if="${p.batchName != null}" th:text="${p.batchName}">Batch A</span>
+        <span th:if="${p.batchName == null}">-</span>
+      </td>
+
+      <td th:text="${#numbers.formatDecimal(p.amount, 1, 2)}">5000.00</td>
+      <td th:text="${#numbers.formatDecimal(p.totalFee, 1, 2)}">8000.00</td>
+      <td th:text="${#numbers.formatDecimal(p.totalPaidSoFar, 1, 2)}">6000.00</td>
+      <td th:text="${#numbers.formatDecimal(p.dueAmount, 1, 2)}">2000.00</td>
+
+      <td th:text="${p.method}">UPI</td>
+
+      <!-- Status badge with simple th:if blocks -->
+      <td>
+                <span class="badge bg-success"
+                      th:if="${p.status != null and p.status.name() == 'PAID'}"
+                      th:text="${p.status}">
+                    PAID
+                </span>
+
+        <span class="badge bg-warning text-dark"
+              th:if="${p.status != null and p.status.name() == 'PARTIALLY_PAID'}"
+              th:text="${p.status}">
+                    PARTIALLY_PAID
+                </span>
+
+        <span class="badge bg-secondary"
+              th:if="${p.status != null and p.status.name() == 'PENDING'}"
+              th:text="${p.status}">
+                    PENDING
+                </span>
+
+        <span class="badge bg-danger"
+              th:if="${p.status != null and p.status.name() != 'PAID'
+                             and p.status.name() != 'PARTIALLY_PAID'
+                             and p.status.name() != 'PENDING'}"
+              th:text="${p.status}">
+                    OTHER
+                </span>
+
+        <span class="badge bg-secondary"
+              th:if="${p.status == null}">
+                    UNKNOWN
+                </span>
+      </td>
+    </tr>
+
+    <tr th:if="${#lists.isEmpty(payments)}">
+      <td colspan="11" class="text-center text-muted py-4">
+        No payments recorded yet. Click "New Payment" to record one.
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
