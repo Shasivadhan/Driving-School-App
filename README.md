@@ -307,55 +307,130 @@ Swagger is mainly for **testing/integration**. Real users use the **Thymeleaf ad
 ```text
 src/main/java/com/ksvtech/drivingschool
 ├─ config
+│  ├─ DataInitializer.java
+│  ├─ OpenApiConfig.java
 │  └─ SecurityConfig.java
+│
 ├─ controller
+│  ├─ AdminBatchController.java
+│  ├─ AdminCertificateController.java
+│  ├─ AdminCourseController.java
+│  ├─ AdminInstructorController.java
+│  ├─ AdminPaymentController.java
+│  ├─ AdminStudentController.java
+│  ├─ AdminVehicleController.java
 │  ├─ AuthController.java
-│  ├─ DashboardController.java
-│  ├─ StudentController.java
-│  ├─ CourseController.java
-│  ├─ CertificateController.java
-│  ├─ InstructorController.java
-│  ├─ VehicleController.java
 │  ├─ BatchController.java
-│  └─ PaymentAdminController.java
+│  ├─ CertificateController.java
+│  ├─ CourseController.java
+│  ├─ DashboardController.java
+│  ├─ InstructorController.java
+│  ├─ PaymentController.java
+│  ├─ StudentController.java
+│  └─ VehicleController.java
+│
 ├─ dto
+│  ├─ AuthRequest.java
 │  ├─ AuthResponse.java
-│  └─ DashboardFinanceSummary.java
+│  ├─ BatchRequest.java
+│  ├─ BatchResponse.java
+│  ├─ CertificateRequest.java
+│  ├─ CertificateResponse.java
+│  ├─ CourseRequest.java
+│  ├─ CourseResponse.java
+│  ├─ DashboardFinanceSummary.java
+│  ├─ ErrorResponse.java
+│  ├─ InstructorRequest.java
+│  ├─ InstructorResponse.java
+│  ├─ PaymentRequest.java
+│  ├─ PaymentResponse.java
+│  ├─ StudentRegistrationRequest.java
+│  ├─ StudentResponse.java
+│  ├─ VehicleRequest.java
+│  └─ VehicleResponse.java
+│
 ├─ entity
-│  ├─ Student.java
-│  ├─ Course.java
-│  ├─ Certificate.java
-│  ├─ Instructor.java
-│  ├─ Vehicle.java
 │  ├─ Batch.java
+│  ├─ BatchStatus.java
+│  ├─ Certificate.java
+│  ├─ Course.java
+│  ├─ Enrollment.java
+│  ├─ Instructor.java
 │  ├─ Payment.java
-│  └─ PaymentStatus.java
+│  ├─ PaymentMethod.java
+│  ├─ PaymentStatus.java
+│  ├─ Role.java
+│  ├─ Student.java
+│  ├─ User.java
+│  ├─ Vehicle.java
+│  └─ VehicleType.java
+│
+├─ exception
+│  ├─ BusinessException.java
+│  ├─ GlobalExceptionHandler.java
+│  └─ NotFoundException.java
+│
 ├─ repository
-│  ├─ StudentRepository.java
-│  ├─ CourseRepository.java
-│  ├─ CertificateRepository.java
-│  ├─ InstructorRepository.java
-│  ├─ VehicleRepository.java
 │  ├─ BatchRepository.java
-│  └─ PaymentRepository.java
-└─ service
-   ├─ CertificateService.java
-   └─ PaymentService.java
+│  ├─ CertificateRepository.java
+│  ├─ CourseRepository.java
+│  ├─ InstructorRepository.java
+│  ├─ PaymentRepository.java
+│  ├─ StudentRepository.java
+│  ├─ UserRepository.java
+│  └─ VehicleRepository.java
+│
+├─ service
+│  ├─ BatchService.java
+│  ├─ CertificateService.java
+│  ├─ CourseService.java
+│  ├─ InstructorService.java
+│  ├─ PaymentService.java
+│  ├─ QRCodeService.java
+│  ├─ StudentService.java
+│  ├─ UserService.java
+│  └─ VehicleService.java
+│
+└─ util
+   └─ DrivingSchoolApplication.java
+
 ```
 
 Templates (Thymeleaf) under:
 
 ```text
-src/main/resources/templates
-├─ login.html
-├─ dashboard.html
-└─ admin/
-   ├─ students/...
-   ├─ courses/...
-   ├─ certificates/...
-   ├─ instructors/...
-   ├─ vehicles/...
-   ├─ batches/...
-   └─ payments/...
+src/main/resources
+├─ static/
+│  └─ bootstrap.min.css
+│
+├─ templates
+│  ├─ admin
+│  │  ├─ batches/
+│  │  │  ├─ form.html
+│  │  │  └─ list.html
+│  │  ├─ certificates/
+│  │  │  ├─ form.html
+│  │  │  └─ list.html
+│  │  ├─ courses/
+│  │  │  ├─ form.html
+│  │  │  └─ list.html
+│  │  ├─ instructors/
+│  │  │  ├─ form.html
+│  │  │  └─ list.html
+│  │  ├─ payments/
+│  │  │  ├─ form.html
+│  │  │  └─ list.html
+│  │  ├─ students/
+│  │  │  ├─ form.html
+│  │  │  └─ list.html
+│  │  └─ vehicles/
+│  │     ├─ form.html
+│  │     └─ list.html
+│  │
+│  ├─ dashboard.html
+│  └─ login.html
+│
+└─ application.yml
+
 ```
 
