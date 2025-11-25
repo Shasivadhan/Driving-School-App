@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Driving Sessions - KsvTech Driving School</title>
+
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"/>
+
+    <style>
+        body {
+            background-color: #f4f6fb;
+        }
+        .page-container {
+            max-width: 1100px;
+        }
+        .card {
+            border-radius: 0.75rem;
+        }
+        .card-header {
+            border-bottom: 0;
+        }
+        .table thead th {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand ms-2" th:href="@{/admin/dashboard}">
+            KsvTech Driving School
+        </a>
+        <div class="navbar-collapse collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/logout}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-4 my-lg-5 page-container">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="mb-0">Driving Sessions</h2>
+            <small class="text-muted">
+                Manage scheduled practice sessions and attendance.
+            </small>
+        </div>
+
+        <a th:href="@{/admin/sessions/new}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> New Session
+        </a>
+    </div>
+
+    <!-- Flash message -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}">Success</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">All Sessions</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0 align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Batch</th>
+                        <th>Instructor</th>
+                        <th>Vehicle</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(sessions)}">
+                        <td colspan="7" class="text-center text-muted py-3">
+                            No sessions scheduled yet.
+                        </td>
+                    </tr>
+
+                    <tr th:each="s,iter : ${sessions}">
+                        <td th:text="${iter.index + 1}">1</td>
+
+                        <!-- Date -->
+                        <td th:text="${#temporals.format(s.sessionDate, 'dd-MM-yyyy')}">
+                            25-11-2025
+                        </td>
+
+                        <!-- Time -->
+                        <td th:text="${#temporals.format(s.startTime, 'HH:mm') + ' - ' +
+                                      #temporals.format(s.endTime, 'HH:mm')}">
+                            07:00 - 08:00
+                        </td>
+
+                        <!-- Batch -->
+                        <td th:text="${s.batch != null ? s.batch.name : '-'}">
+                            Morning LMV
+                        </td>
+
+                        <!-- Instructor (showing ID because 'name' field does not exist) -->
+                        <td th:text="${s.instructor != null ? 'Instructor #' + s.instructor.id : '-'}">
+                            Instructor #1
+                        </td>
+
+                        <!-- Vehicle -->
+                        <td th:text="${s.vehicle != null ? s.vehicle.registrationNumber : '-'}">
+                            KA01AB1234
+                        </td>
+
+                        <td class="text-end">
+                            <!-- Attendance button -->
+                            <a class="btn btn-sm btn-outline-primary me-1"
+                               th:href="@{/admin/sessions/{id}/attendance(id=${s.id})}">
+                                <i class="bi bi-clipboard-check me-1"></i> Attendance
+                            </a>
+
+                            <!-- Edit button -->
+                            <a class="btn btn-sm btn-outline-secondary me-1"
+                               th:href="@{/admin/sessions/{id}/edit(id=${s.id})}">
+                                <i class="bi bi-pencil-square me-1"></i> Edit
+                            </a>
+
+                            <!-- Delete -->
+                            <form th:action="@{/admin/sessions/{id}/delete(id=${s.id})}"
+                                  method="post"
+                                  class="d-inline">
+                                <input type="hidden"
+                                       th:name="${_csrf.parameterName}"
+                                       th:value="${_csrf.token}"/>
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Delete this session?');">
+                                    <i class="bi bi-trash me-1"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
